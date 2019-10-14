@@ -1,0 +1,22 @@
+{
+    "name": "superloop-ltd/lara-flux",
+    "type": "library",
+    "license": "BSD-3",
+    "require": {
+        "php": "^7.2",
+        "influxdb/influxdb-php": "^1.15",
+        "laravel/framework": "^5.2 || ^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaraFlux\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaraFlux\\ServiceProvider"
+            ]
+        }
+    }
+}
