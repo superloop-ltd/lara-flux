@@ -24,7 +24,7 @@ class Model
 
         throw_unless(LaraFlux::selectDB($instance->database)->writePoints([
             new Point(
-                $key instanceof IlluminateModel ? $key->getKey() : $key,
+                $instance->key($key),
                 $value,
                 [],
                 [],
@@ -37,6 +37,11 @@ class Model
 
     public static function query($key)
     {
-        return new QueryBuilder($key, new static);
+        return new QueryBuilder((new static())->key($key), new static);
+    }
+
+    protected function key($key)
+    {
+        return $key instanceof IlluminateModel ? get_class($key).$key->getKey() : $key;
     }
 }
