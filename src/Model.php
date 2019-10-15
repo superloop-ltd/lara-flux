@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 class Model
 {
-    protected $database;
+    public $database;
+
+    public $key;
 
     public $time;
 
@@ -19,7 +21,6 @@ class Model
     {
         $instance = new static();
         $instance->value = $value;
-        $instance->time = $time ?: $instance->buildTimestamp();
 
         throw_unless(LaraFlux::selectDB($instance->database)->writePoints([
             new Point(
@@ -27,7 +28,7 @@ class Model
                 $value,
                 [],
                 [],
-                $instance->time
+                $time ?: null
             )
         ]), new Exception('Unable to write to InfluxDB'));
 
@@ -36,16 +37,6 @@ class Model
 
     public static function query($key)
     {
-        $instance = new static();
-
-        return LaraFlux::selectDB($instance->database)
-            ->getQueryBuilder()
-            ->from($key instanceof IlluminateModel ? $key->getKey() : $key);
-    }
-
-    protected function buildTimestamp()
-    {
-        [$usec, $sec] = explode(' ', microtime());
-        return sprintf('%d%06d', $sec, $usec*1000000);
+        return new QueryBuilder($key, new static);
     }
 }
